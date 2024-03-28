@@ -1,10 +1,22 @@
 version: '3'
 services:
-  redis:
-    container_name: "${APP_NAME}-redis"
-    image: redis:latest
+  app:
+    build: .
+    container_name: "${APP_NAME}-app"
+    restart: always
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
     ports:
-      - "6379:6379"
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./app:/app
+      - ./log:/log
+    links:
+      - db
+      - redis
 
   db:
     container_name: "${APP_NAME}-db"
@@ -19,17 +31,8 @@ services:
     volumes:
       - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
 
-  app:
-    container_name: "${APP_NAME}-app"
-    build: .
-    restart: always
-    stdin_open: true
-    tty: true
-    env_file:
-      - .env
+  redis:
+    container_name: "${APP_NAME}-redis"
+    image: redis:latest
     ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./app:/app
-      - ./log:/log
+      - "6379:6379"
