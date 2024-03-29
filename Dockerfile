@@ -1,14 +1,13 @@
 FROM node:latest
 
-RUN mkdir /app
 WORKDIR /app
 
-ADD . .
+COPY ./app .
 
-RUN npm install pm2@latest -g
 RUN npm install
+RUN npm install pm2@latest -g
 
-CMD ["npm", "run", "start"]
+CMD ["npm", "run start"]
 
 #RUN yarn install && yarn build
 
